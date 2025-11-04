@@ -479,6 +479,24 @@ export default [
               ]
             },
             {
+              "path": "/repair",
+              "redirect": "/repair/repair",
+              "meta": {
+                "title": "修理统计",
+                "icon": "sfont system-24gl-printer"
+              },
+              "children": [
+                {
+                  "path": "repair",
+                  "meta": {
+                    "title": "修理统计",
+                    "icon": "sfont system-24gl-printer"
+                  },
+                  "component": "repair_repair"
+                }
+              ]
+            },
+            {
               "path": "/tab",
               "redirect": "/tab/index",
               "meta": {

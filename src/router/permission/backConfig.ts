@@ -146,6 +146,11 @@ const tab = {
   tab: createNameComponent(() => import('@/views/main/tab/index.vue')),
 }
 
+/** 维护相关 */
+const repair = {
+  repair:createNameComponent(() => import('@/views/main/repair/repair.vue'))
+}
+
 /** 导出所有路由，供后端配置使用 */
 const allRoutes = {
   dashboard,
@@ -159,6 +164,7 @@ const allRoutes = {
   print,
   community,
   tab,
+  repair,
 }
 
 export default allRoutes
