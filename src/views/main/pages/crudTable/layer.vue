@@ -80,7 +80,7 @@ export default defineComponent({
   methods: {
     submit() {
       if (this.ruleForm) {
-        this.ruleForm.validate((valid) => {
+        this.ruleForm.validate((valid: any) => {
           if (valid) {
             let params = this.form
             if (this.layer.row) {

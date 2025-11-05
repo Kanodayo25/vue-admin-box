@@ -1,15 +1,15 @@
 <template>
   <div class="app-container">
     <div class="filter-container" style="margin-bottom: 20px;">
-      <el-input v-model="listQuery.departmentName" placeholder="科室名" style="width: 200px;" class="filter-item" @change="getTableData(true)" />
-      <el-input v-model="listQuery.troubleDesc" placeholder="问题描述" style="width: 200px;margin-left:5px;" class="filter-item" @change="getTableData(true)" />
-      <el-select v-model="listQuery.departmentType" placeholder="科室类型" clearable style="width: 130px;margin-left:5px;"  class="filter-item">
+      <el-input v-model="query.departmentName" placeholder="科室名" style="width: 200px;" class="filter-item" @change="getTableData(true)" />
+      <el-input v-model="query.troubleDesc" placeholder="问题描述" style="width: 200px;margin-left:5px;" class="filter-item" @change="getTableData(true)" />
+      <el-select v-model="query.departmentType" placeholder="科室类型" clearable style="width: 130px;margin-left:5px;"  class="filter-item">
         <el-option v-for="item in departmentType" :key="item.code" :label="item.desc" :value="item.code" />
       </el-select>
-      <el-select v-model="listQuery.type" placeholder="问题类型" clearable class="filter-item" style="width: 130px;margin-left:5px;">
+      <el-select v-model="query.type" placeholder="问题类型" clearable class="filter-item" style="width: 130px;margin-left:5px;">
         <el-option v-for="item in repairErrorType" :key="item.code" :label="item.desc" :value="item.code" />
       </el-select>
-      <el-select v-model="listQuery.isHard" placeholder="是否疑难" style="width: 140px;margin-left:5px;" class="filter-item" @change="fetchData">
+      <el-select v-model="query.isHard" placeholder="是否疑难" style="width: 140px;margin-left:5px;" class="filter-item" @change="fetchData">
         <el-option v-for="item in baseYesOrNo" :key="item.code" :label="item.desc" :value="item.code" />
       </el-select>
       <el-button  class="filter-item" :icon="Search" style='margin-left:10px' type="primary"  @click="getTableData(true)">
@@ -61,7 +61,7 @@
           </el-table-column>
         <el-table-column label="操作" align="center" fixed="right" width="200">
           <template #default="scope">
-            <el-button >修改</el-button>
+            <el-button @click="handleEdit(scope.row)">修改</el-button>
             <el-popconfirm title="删除" >
               <template #reference>
                 <el-button type="danger">删除</el-button>
@@ -112,7 +112,13 @@ export default {
 
     // 存储搜索用的数据
     const query = reactive({
-      input: ''
+      input: '',
+      importance: '',
+      departmentName: '',
+      departmentType: null,
+      isHard: null,
+      type:null,
+      troubleDesc:''
     })
     // 弹窗控制器
     const layer: LayerInterface = reactive({
@@ -152,7 +158,6 @@ export default {
     }
     // 新增弹窗功能
     const handleAdd = () => {
-      console.log("1111")
       layer.title = '新增数据'
       layer.show = true
       delete layer.row
@@ -191,7 +196,8 @@ export default {
       getTableData,
       layer,
       handleAdd,
-      handleEdit
+      handleEdit,
+      query
     }
   },
   data() {
