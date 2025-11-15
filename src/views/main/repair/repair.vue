@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container">
-    <div class="filter-container" style="margin-bottom: 20px;">
+  <div class="layout-container">
+    <div class="layout-container-form flex space-between" >
       <el-input v-model="query.departmentName" placeholder="科室名" style="width: 200px;" class="filter-item" @change="getTableData(true)" />
       <el-input v-model="query.troubleDesc" placeholder="问题描述" style="width: 200px;margin-left:5px;" class="filter-item" @change="getTableData(true)" />
       <el-select v-model="query.departmentType" placeholder="科室类型" clearable style="width: 130px;margin-left:5px;"  class="filter-item">
@@ -12,12 +12,17 @@
       <el-select v-model="query.isHard" placeholder="是否疑难" style="width: 140px;margin-left:5px;" class="filter-item" @change="fetchData">
         <el-option v-for="item in baseYesOrNo" :key="item.code" :label="item.desc" :value="item.code" />
       </el-select>
+    <div class="layout-container-form-handle">
       <el-button  class="filter-item" :icon="Search" style='margin-left:10px' type="primary"  @click="getTableData(true)">
         查询
+      </el-button>
+      <el-button  class="filter-item" :icon="Refresh" style='margin-left:10px' type="primary"  @click="refreshSearch(query)">
+        重置
       </el-button>
       <el-button  class="add-item" :icon="Plus" style='margin-left:10px' type="primary" @click="handleAdd">
         新增
       </el-button>
+      </div>
     </div>
     <div class="layout-container-table">
       <Table
@@ -62,7 +67,7 @@
         <el-table-column label="操作" align="center" fixed="right" width="200">
           <template #default="scope">
             <el-button @click="handleEdit(scope.row)">修改</el-button>
-            <el-popconfirm title="删除" >
+            <el-popconfirm title="删除" @confirm="handleDel(scope.row)">
               <template #reference>
                 <el-button type="danger">删除</el-button>
               </template>
@@ -76,17 +81,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive } from 'vue'
-import { Plus, Search, Delete, Loading } from '@element-plus/icons'
+import { ref, reactive } from 'vue'
+import { Plus, Search, Delete, Loading ,Refresh} from '@element-plus/icons'
 import { Page } from '@/components/table/type'
-import { queryData } from '@/api/repair'
+import { queryData ,deleteData} from '@/api/repair'
 import {DEPARTMENT_TYPE} from '@/constant/enums'
 import {BASE_YES_OR_NO } from '@/constant/enums'
 import {REPAIR_ERROR_TYPE } from '@/constant/enums'
 import type { LayerInterface } from '@/components/layer/index.vue'
 import Table from '@/components/table/index.vue'
 import Layer from './layer.vue'
-import { setup } from 'mockjs' 
+import { ElMessage } from 'element-plus'
 
 
 export default {
@@ -112,14 +117,23 @@ export default {
 
     // 存储搜索用的数据
     const query = reactive({
-      input: '',
-      importance: '',
       departmentName: '',
       departmentType: null,
       isHard: null,
       type:null,
       troubleDesc:''
     })
+
+    //查询条件重置
+    const refreshSearch = (query:any)=>{
+        query.departmentName = ''
+        query.departmentType = null
+        query.isHard = null
+        query.type = null
+        query.troubleDesc = ''
+        getTableData(true)
+    }
+
     // 弹窗控制器
     const layer: LayerInterface = reactive({
       show: false,
@@ -168,6 +182,18 @@ export default {
       layer.row = row
       layer.show = true
     }
+    // 删除功能
+    const handleDel = (row: any) => {
+      console.log(row)
+      deleteData(row.id)
+      .then(res => {
+        ElMessage({
+          type: 'success',
+          message: '删除成功'
+        })
+        getTableData(true)
+      })
+    }
     getTableData(true)  
     return {
       departmentType:DEPARTMENT_TYPE,
@@ -197,7 +223,10 @@ export default {
       layer,
       handleAdd,
       handleEdit,
-      query
+      query,
+      handleDel,
+      Refresh,
+      refreshSearch
     }
   },
   data() {

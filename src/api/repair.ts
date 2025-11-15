@@ -39,10 +39,9 @@ export function updateData(data:object){
 
 export function deleteData(data:object){
     return request({
-        url: '/troubleInfo/delete',
+        url: '/troubleInfo/delete?id='+data,
         method:'post',
-        baseURL:'http://175.178.101.42:8099',
-        data
+        baseURL:'http://175.178.101.42:8099'
     })  
 }
 
